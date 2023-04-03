@@ -1,15 +1,36 @@
 {% extends "base.html" %}
 
 {% block content %}
-  <h1>Tags List</h1>
-
-  {% if tag_list %}
-    <ul>
-      {% for tag in tag_list %}
-        <li>
-          {{ tag.name }}
-        </li>
-      {% endfor %}
-    </ul>
-  {% endif %}
+  <div class="container">
+    <h1 class="mt-4 mb-4">Tags</h1>
+    <a href="{% url 'to_do_list:tag-create' %}" class="btn btn-primary mb-3">
+      Create
+    </a>
+    {% if tag_list %}
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Update</th>
+            <th>Delete</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for tag in tag_list %}
+            <tr>
+              <td><strong>{{ tag.name }}</strong></td>
+              <td>
+                <a href="{% url 'to_do_list:tag-update' pk=tag.pk %}" class="btn btn-sm btn-primary">Update</a>
+              </td>
+              <td>
+                <a href="{% url 'to_do_list:tag-delete' pk=tag.pk %}" class="btn btn-sm btn-danger">Delete</a>
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    {% else %}
+      <p>No tags found.</p>
+    {% endif %}
+  </div>
 {% endblock %}

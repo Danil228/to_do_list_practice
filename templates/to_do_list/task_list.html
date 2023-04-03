@@ -1,32 +1,60 @@
 {% extends "base.html" %}
 
 {% block content %}
-  <h1>TODO List</h1>
+  <h1 class="mb-4">TODO List</h1>
 
-  <a href="{% url 'to_do_list:task-create' %} " class="btn btn-primary link-to-page">
-    Create
-  </a>
+  <div class="mb-4">
+    <a href="{% url 'to_do_list:task-create' %}" class="btn btn-primary">
+      Create
+    </a>
+  </div>
+
   {% if task_list %}
-    <ul>
+    <div class="list-group">
       {% for task in task_list %}
-        <li>
-          {{ task.content }}
-          {% if task.done %}
-            Done
-          {% else %}
-            Not done
-          {% endif %}
+        <div class="list-group-item">
+          <strong>{{ task.content }}</strong>
+          <span class="badge badge-{{ task.done|yesno:'success,danger' }}">
+            {% if task.done %}
+              Done
+            {% else %}
+              Not done
+            {% endif %}
+          </span>
           <br>
-          {{ task.created_at|date }} {{ task.created_at|time }}
+          <small class="text-muted">
+            Created:
+            {{ task.created_at|date:"F j, Y" }} {{ task.created_at|time:"g:i A" }}
+          </small>
           {% if task.deadline %}
-            Deadline: {{ task.deadline|date:"F j, Y" }} {{ task.deadline|time:"g:i A" }}
+            <br>
+            <small class="text-danger">
+              Deadline: {{ task.deadline|date:"F j, Y" }} {{ task.deadline|time:"g:i A" }}
+            </small>
           {% endif %}
           <br>
-          {% for tag in task.tags.all %}
-            {{ tag.name }}
-          {% endfor %}
-        </li>
+          {% if task.tags.all %}
+            {% for tag in task.tags.all %}
+              <span class="badge badge-primary">{{ tag.name }}</span>
+            {% endfor %}
+          {% endif %}
+          <a href="{% url 'to_do_list:task-update' pk=task.pk %}" class="btn btn-secondary btn-sm">Update</a>
+          <a href="{% url 'to_do_list:task-delete' pk=task.pk %}" class="btn btn-danger btn-sm">Delete</a>
+          <div class="float-right">
+            {% if task.done %}
+              <a href="{% url 'to_do_list:task-confirm' pk=task.pk%}" class="btn btn-secondary btn-sm">
+                Undo
+              </a>
+            {% else %}
+              <a href="{% url 'to_do_list:task-confirm' pk=task.pk%}" class="btn btn-success btn-sm">
+                Confirm
+              </a>
+            {% endif %}
+          </div>
+        </div>
       {% endfor %}
-    </ul>
+    </div>
+  {% else %}
+    <p>No tasks found.</p>
   {% endif %}
 {% endblock %}
