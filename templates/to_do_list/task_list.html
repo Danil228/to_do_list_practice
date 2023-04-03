@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <h1>TODO List</h1>
+
+  <a href="{% url 'to_do_list:task-create' %} " class="btn btn-primary link-to-page">
+    Create
+  </a>
+  {% if task_list %}
+    <ul>
+      {% for task in task_list %}
+        <li>
+          {{ task.content }}
+          {% if task.done %}
+            Done
+          {% else %}
+            Not done
+          {% endif %}
+          <br>
+          {{ task.created_at|date }} {{ task.created_at|time }}
+          {% if task.deadline %}
+            Deadline: {{ task.deadline|date:"F j, Y" }} {{ task.deadline|time:"g:i A" }}
+          {% endif %}
+          <br>
+          {% for tag in task.tags.all %}
+            {{ tag.name }}
+          {% endfor %}
+        </li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+{% endblock %}

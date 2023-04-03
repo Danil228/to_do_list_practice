@@ -9,9 +9,12 @@ class Tag(models.Model):
 
 
 class Task(models.Model):
-    name = models.CharField(max_length=63)
-    content = models.TextField()
+    content = models.CharField(max_length=255)
     created_at = models.DateTimeField(auto_now_add=True)
-    deadline = models.DateTimeField(blank=True, null=True)
+    deadline = models.DateTimeField(blank=True, null=True, default=None)
     done = models.BooleanField()
     tags = models.ManyToManyField(Tag, related_name="tags")
+
+    class Meta:
+        ordering = ['done', '-created_at']
+
